@@ -1,6 +1,6 @@
 # 2025/06/03 新人研修
 
-Google colaboratory(https://colab.google/)を開く
+Google colaboratory( https://colab.google/ ) を開く
 
 適当なipynbファイルを作成
 ```sh
@@ -9,6 +9,6 @@ drive.mount('/content/gdrive')
 
 %cd /content/gdrive/MyDrive
 
-!git clone https://github.com/a-tetsuya001/training.git
+%git clone https://github.com/a-tetsuya001/training.git
 ```
 を実行
