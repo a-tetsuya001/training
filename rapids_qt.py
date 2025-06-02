@@ -206,7 +206,7 @@ class QuadTreeGenerator:
     
     
     # `self.gif_frames`のフレームを繋いで、アニメーションGIFを生成するメソッド
-    def save_gif(self, output_path: str, duration: int = 10):
+    def save_gif(self, output_path: str, duration: int = 30):
         self.gif_frames[0].save(
             output_path,
             save_all=True,
