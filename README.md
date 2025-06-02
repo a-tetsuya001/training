@@ -12,3 +12,5 @@ drive.mount('/content/gdrive')
 %git clone https://github.com/a-tetsuya001/training.git
 ```
 を実行
+
+training/main.ipynb を実行する
