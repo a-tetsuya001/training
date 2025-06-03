@@ -104,6 +104,7 @@ class QuadTreeGenerator:
             rect.bottom - rect.top + 1 <= self.min_size
         )
     
+    
     # 指定された`Rect`を四分割して生成された、新しい`Quad`のリストを返すメソッド
     def split(self, rect: Rect) -> list:
         # 4つの矩形に分割する
@@ -120,6 +121,7 @@ class QuadTreeGenerator:
         # 四分割した領域それぞれに対して、Quadを生成
         quads = [self.create_quad(rect) for rect in rects]
         return quads
+    
     
     # scoreを計算するメソッド
     def calc_score_and_color(self, rect: Rect) -> tuple[float, tuple[int, int, int]]:
@@ -168,6 +170,9 @@ class QuadTreeGenerator:
         
         similarities = cosine_similarity(V_pre.values.get().T, self.pattern.values.get().T)
         similarities = similarities.flatten()
+        
+# ================ 以下の範囲を任意に変更 ================
+
         # 共通する発現パターンに重み付け
         similarities[0] = similarities[0] * 0.8
         similarities[9] = similarities[9] * 0.7
@@ -175,38 +180,39 @@ class QuadTreeGenerator:
         match max_index:
             # RGB
             case 0:
-                color = (255, 0, 0)   # 赤
+                color = (255, 0, 0)   # red
             case 1:
-                color = (255, 165, 0)   # オレンジ
+                color = (255, 165, 0)   # orange
             case 2:
-                color = (255, 255, 0)   # 黄
+                color = (255, 255, 0)   # yellow
             case 3:
-                color = (50, 205, 50)   # ライム
+                color = (50, 205, 50)   # lime
             case 4:
-                color = (0, 128, 0)   # 緑
+                color = (0, 128, 0)   # green
             case 5:
-                color = (0, 255, 255)   # シアン
+                color = (0, 255, 255)   # cyan
             case 6:
-                color = (0, 0, 255)  # 青
+                color = (0, 0, 255)  # blue
             case 7:
-                color = (128, 0, 128)   # 紫
+                color = (128, 0, 128)   # purple
             case 8:
-                color = (255, 192, 203)  # ピンク
+                color = (255, 192, 203)  # pink
             case 9:
-                color = (255, 255, 255)  # 白色
+                color = (255, 255, 255)  # white
 
         if all(sim > 0.9 for sim in H_similarities) and rect.calc_area() <= (self.min_size * 2 * 2) ** 2:
             score = 0
         else:
             # similaritiesを降順にソート
             similarities = np.sort(similarities)[::-1]
-            max_index = np.argmax(similarities)
             score = similarities[:3].sum()
         return score, color
     
+# ===================== ここまでの範囲 =====================
+    
     
     # `self.gif_frames`のフレームを繋いで、アニメーションGIFを生成するメソッド
-    def save_gif(self, output_path: str, duration: int = 30):
+    def save_gif(self, output_path: str, duration: int = 20):
         self.gif_frames[0].save(
             output_path,
             save_all=True,
@@ -215,9 +221,11 @@ class QuadTreeGenerator:
             loop=1,
         )
         
+        
     def save_png(self, output_path: str):
         frame = self.gif_frames[len(self.gif_frames) - 1]
         frame.save(output_path)
+          
             
     def save_frames_as_png(self, output_dir: str):
         for i, frame in enumerate(self.gif_frames):
@@ -248,7 +256,6 @@ class QuadExpression:
             #df = df.reindex(self.pattern.index, fill_value=0)
             result = cudf.concat([result, df], axis=1)
         result.to_csv(output_path)
-        
         
         
 class QuadTreeVisualizer:
