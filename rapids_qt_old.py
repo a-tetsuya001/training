@@ -5,7 +5,6 @@ import cupy
 import cudf
 import dask_cudf
 import heapq
-import colorsys
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.image as mpimg
@@ -40,7 +39,6 @@ class QuadTreeGenerator:
         self,
         arr: cupy.ndarray,
         gene_to_channnel: dict,
-        rank: int,
         pattern: cudf.DataFrame,
         iterations: int,
         min_size: int,
@@ -48,7 +46,6 @@ class QuadTreeGenerator:
     ):
         self.arr = arr
         self.gene_to_channel = gene_to_channnel
-        self.rank = rank
         self.pattern = pattern
         self.iterations = iterations    # 分割回数
         self.min_size = min_size      # 最小の分割サイズ
@@ -125,17 +122,6 @@ class QuadTreeGenerator:
         quads = [self.create_quad(rect) for rect in rects]
         return quads
     
-    # 色相環から指定された数の色を生成するメソッド
-    def generate_n_colors(self) -> list:
-        colors = []
-        for i in range(self.rank):
-            h = i / self.rank   # 色相を均等に分布させる
-            s = 0.9             # 彩度  
-            v = 0.9             # 明度
-            r, g, b = colorsys.hsv_to_rgb(h, s, v)  # HSVからRGBに変換
-            colors.append((int(r * 255), int(g * 255), int(b * 255)))  # RGBを0-255の範囲に変換
-        return colors
-    
     
     # scoreを計算するメソッド
     def calc_score_and_color(self, rect: Rect) -> tuple[float, tuple[int, int, int]]:
@@ -190,9 +176,30 @@ class QuadTreeGenerator:
         # 共通する発現パターンに重み付け
         similarities[0] = similarities[0] * 0.8
         similarities[9] = similarities[9] * 0.7
-        
         max_index = np.argmax(similarities)
-        color = self.generate_n_colors()[max_index]  # 色を生成
+        match max_index:
+            # RGB
+            # rankに応じて色を設ける
+            case 0:
+                color = (255, 0, 0)   # red
+            case 1:
+                color = (255, 165, 0)   # orange
+            case 2:
+                color = (255, 255, 0)   # yellow
+            case 3:
+                color = (50, 205, 50)   # lime
+            case 4:
+                color = (0, 128, 0)   # green
+            case 5:
+                color = (0, 255, 255)   # cyan
+            case 6:
+                color = (0, 0, 255)  # blue
+            case 7:
+                color = (128, 0, 128)   # purple
+            case 8:
+                color = (255, 192, 203)  # pink
+            case 9:
+                color = (255, 255, 255)  # white
 
         if all(sim > 0.9 for sim in H_similarities) and rect.calc_area() <= (self.min_size * 2 * 2) ** 2:
             score = 0
@@ -203,7 +210,7 @@ class QuadTreeGenerator:
         return score, color
     
 # ===================== ここまでの範囲 =====================
-
+    
     
     # `self.gif_frames`のフレームを繋いで、アニメーションGIFを生成するメソッド
     def save_gif(self, output_path: str, duration: int = 20):
