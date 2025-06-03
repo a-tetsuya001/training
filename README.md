@@ -14,3 +14,4 @@ drive.mount('/content/gdrive')
 を実行
 
 training/main.ipynb を実行する
+training/rapids_qt.pyを更新する
