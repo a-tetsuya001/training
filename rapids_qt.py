@@ -179,6 +179,7 @@ class QuadTreeGenerator:
         max_index = np.argmax(similarities)
         match max_index:
             # RGB
+            # rankに応じて色を設ける
             case 0:
                 color = (255, 0, 0)   # red
             case 1:
