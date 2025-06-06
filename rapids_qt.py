@@ -212,7 +212,7 @@ class QuadTreeGenerator:
             save_all=True,
             append_images=self.gif_frames[1:],
             duration=duration,
-            loop=1,
+            loop=None,
         )
         
         
